@@ -95,10 +95,55 @@ async function insertPostImg(connection, insertPostImgParams) {
     return insertPostImgRow;
 }
 
+async function updatePost(connection, editPostParams) {
+    const updatePostQuery = `
+    UPDATE Post
+    SET content = ?
+    WHERE postIdx = ?;
+    `;
+
+    const updatePostRow = await connection.query(
+        updatePostQuery,
+        editPostParams
+    );
+
+    return updatePostRow;
+}
+
+async function updatePostStatus(connection, postIdx) {
+    const updatePostStatusQuery = `
+    UPDATE Post
+    SET STATUS = 'INACTIVE'
+    WHERE postIdx = ?`;
+
+    const updatePostStatusRow = await connection.query(
+        updatePostStatusQuery,
+        postIdx
+    );
+
+    return updatePostStatusRow;
+}
+
+async function selectPostStatus(connection, postIdx) {
+    const selectPostStatusQuery = `
+    SELECT status
+    FROM Post
+    WHERE postIdx = ?`;
+
+    const [selectPostStatusRow] = await connection.query(
+        selectPostStatusQuery,
+        postIdx
+    );
+    return selectPostStatusRow;
+}
+
 module.exports = {
     selectuserPosts,
     selectPosts,
     selectPostImgs,
     insertPost,
     insertPostImg,
+    updatePost,
+    updatePostStatus,
+    selectPostStatus,
 };

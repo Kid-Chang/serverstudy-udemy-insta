@@ -37,3 +37,53 @@ exports.createPost = async function (userIdx, content, postImgUrls) {
         connection.release();
     }
 };
+
+exports.editPost = async function (postIdx, content) {
+    const connection = await pool.getConnection(async conn => conn);
+
+    try {
+        const editPostParams = [content, postIdx];
+        const editPostResult = await postDao.updatePost(
+            connection,
+            editPostParams
+        );
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        console.log(`App - editPost Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+};
+
+exports.editPostStatusPost = async function (postIdx) {
+    const connection = await pool.getConnection(async conn => conn);
+
+    try {
+        // 포스트 삭제 전, 포스트가 ACTIVE 인지 확인부터 해야함.
+
+        // 게시물 상태조회
+        const checkPostStatusResult = await postProvider.checkPostStatus(
+            postIdx
+        );
+
+        if (checkPostStatusResult == 'INACTIVE') {
+            return errResponse(baseResponse.POST_STATUS_INACTIVE);
+        } else if (checkPostStatusResult == '') {
+            return errResponse(baseResponse.POST_NOT_EXIST);
+        }
+
+        // 게시물 삭제
+        const editPostStatusResult = await postDao.updatePostStatus(
+            connection,
+            postIdx
+        );
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        console.log(`App - deletePost Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+};
