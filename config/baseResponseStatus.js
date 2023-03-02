@@ -8,7 +8,7 @@ module.exports = {
     TOKEN_VERIFICATION_FAILURE : { "isSuccess": false, "code": 3000, "message":"JWT 토큰 검증 실패" },
     TOKEN_VERIFICATION_SUCCESS : { "isSuccess": true, "code": 1001, "message":"JWT 토큰 검증 성공" }, // ?
 
-    //Request error
+    //Request error (형식적)
     SIGNUP_EMAIL_EMPTY : { "isSuccess": false, "code": 2001, "message":"이메일을 입력해주세요" },
     SIGNUP_EMAIL_LENGTH : { "isSuccess": false, "code": 2002, "message":"이메일은 30자리 미만으로 입력해주세요." },
     SIGNUP_EMAIL_ERROR_TYPE : { "isSuccess": false, "code": 2003, "message":"이메일을 형식을 정확하게 입력해주세요." },
@@ -35,7 +35,10 @@ module.exports = {
     USER_USERIDX_EMPTY : { "isSuccess": false, "code": 2019, "message": "userIdx를 입력해주세요." },
     USER_USERIDX_LENGTH : { "isSuccess": false, "code": 2020, "message": "userIdx는 0보다 큰 값으로 입력해주세요." },
 
-    // Response error
+    POST_POSTIMGURLS_EMPTY : { "isSuccess": false, "code": 2021, "message": "이미지 URL을 입력해주세요." },
+    POST_CONTENT_LENGTH :  { "isSuccess": false, "code": 2022, "message": "내용 길이는 450보다 작게 입력해주세요." },
+
+    // Response error(의미적)
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"중복된 이메일입니다." },
     SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"중복된 닉네임입니다." },
 

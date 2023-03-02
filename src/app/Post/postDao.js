@@ -1,6 +1,6 @@
 // 유저 게시글 조회
 async function selectuserPosts(connection, userIdx) {
-  const selectuserPostsQuery = `
+    const selectuserPostsQuery = `
     SELECT p.postIdx as postIdx,
         pi.imgUrl as postImgUrl    
     FROM Post as p 
@@ -12,14 +12,17 @@ async function selectuserPosts(connection, userIdx) {
     order by p.postIdx;
     `;
 
-  const [userPostsRows] = await connection.query(selectuserPostsQuery, userIdx);
+    const [userPostsRows] = await connection.query(
+        selectuserPostsQuery,
+        userIdx
+    );
 
-  return userPostsRows;
+    return userPostsRows;
 }
 
 // 게시물 정보 조회
 async function selectPosts(connection, userIdx) {
-  const selectPostsQuery = `
+    const selectPostsQuery = `
     SELECT p.postIdx as postIdx,
     u.userIdx as userIdx,
     u.nickName as nickName,
@@ -48,12 +51,12 @@ async function selectPosts(connection, userIdx) {
     group by p.postIdx
     `;
 
-  const [postRows] = await connection.query(selectPostsQuery, userIdx);
-  return postRows;
+    const [postRows] = await connection.query(selectPostsQuery, userIdx);
+    return postRows;
 }
 
 async function selectPostImgs(connection, postIdx) {
-  const selectPostImgsQuery = `
+    const selectPostImgsQuery = `
     select pi.postImgUrlIdx,
         pi.imgUrl
         FROM PostImgUrl as pi
@@ -61,12 +64,41 @@ async function selectPostImgs(connection, postIdx) {
         WHERE pi.status = 'ACTIVE' and p.postIdx = ?
         `;
 
-  const [postImgsRows] = await connection.query(selectPostImgsQuery, postIdx);
-  return postImgsRows;
+    const [postImgsRows] = await connection.query(selectPostImgsQuery, postIdx);
+    return postImgsRows;
+}
+
+async function insertPost(connection, insertPostParams) {
+    const insertPostQuery = `
+    INSERT INTO Post(userIdx, content)
+    VALUES (?, ?);
+  `;
+
+    const insertPostRow = await connection.query(
+        insertPostQuery,
+        insertPostParams
+    );
+
+    return insertPostRow;
+}
+
+async function insertPostImg(connection, insertPostImgParams) {
+    const insertPostImgQuery = `
+  INSERT INTO PostImgUrl(postIdx, imgUrl)
+  VALUES (?, ?);`;
+
+    const insertPostImgRow = await connection.query(
+        insertPostImgQuery,
+        insertPostImgParams
+    );
+
+    return insertPostImgRow;
 }
 
 module.exports = {
-  selectuserPosts,
-  selectPosts,
-  selectPostImgs,
+    selectuserPosts,
+    selectPosts,
+    selectPostImgs,
+    insertPost,
+    insertPostImg,
 };

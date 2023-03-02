@@ -27,3 +27,37 @@ exports.getPosts = async function (req, res) {
 
   return res.send(response(baseResponse.SUCCESS, postListResult));
 };
+
+/**
+ * API NO. 3.2
+ * API NAME: 게시물 생성 API
+ * [POST] /posts
+ */
+exports.postPosts = async function (req, res) {
+  /**
+   * Body: userIdx, content, postImgUrls
+   */
+
+  const { userIdx, content, postImgUrls } = req.body;
+
+  // validation
+  if (!userIdx) {
+    return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));
+  } else if (postImgUrls.length <= 0) {
+    return res.send(errResponse(baseResponse.POST_POSTIMGURLS_EMPTY));
+  }
+
+  if (userIdx <= 0) {
+    return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
+  } else if (content.length > 450) {
+    return res.send(errResponse(baseResponse.POST_CONTENT_LENGTH));
+  }
+
+  const createPostResponse = await postService.createPost(
+    userIdx,
+    content,
+    postImgUrls,
+  );
+
+  return res.send(response(baseResponse.SUCCESS, createPostResponse));
+};
