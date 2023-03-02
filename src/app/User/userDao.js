@@ -19,12 +19,22 @@ async function selectUserEmail(connection, email) {
   return emailRows;
 }
 
-// userId 회원 조회
-async function selectUserIdx(connection, userIdx) {
+// userInfo 조회
+async function selectUserInfo(connection, userIdx) {
   const selectUserIdxQuery = `
-                 SELECT email, nickname, name
-                 FROM User 
-                 WHERE userIdx = ?;
+                  SELECT u.userIdx as userIdx,
+                  u.nickName as nickName,
+                  u.name as name,
+                  u.profileImgUrl as profileImgUrl,
+                  if(followerIdx is null, 0, followerIdx) as followerCount,
+                  if(followingCount is null, 0, followingCount) as followingCount,
+                  if(postCount is null, 0, postCount) as postCount
+                  FROM User as u
+                    left join (select userIdx, count(postIdx)as postCount from Post where status='ACTIVE' group by postIdx) p on p.userIdx = u.userIdx
+                    left join (select followerIdx, count(followIdx) as follwerCount from Follow where status='ACTIVE' group by followIdx) fc on fc.followerIdx
+                    left join (select followeeIdx, count(followIdx) as followingCount from Follow where status='ACTIVE' group by followIdx) f on f.followeeIdx
+                  where u.userIdx = ? and u.status = 'ACTIVE'
+                  group by u.userIdx;
                  `;
   const [userRow] = await connection.query(selectUserIdxQuery, userIdx);
   return userRow;
@@ -83,7 +93,7 @@ async function updateUserInfo(connection, id, nickname) {
 module.exports = {
   selectUser,
   selectUserEmail,
-  selectUserIdx,
+  selectUserInfo,
   insertUserInfo,
   selectUserPassword,
   selectUserAccount,
